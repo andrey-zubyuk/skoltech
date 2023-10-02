@@ -62,8 +62,8 @@ int main(int argc, char **argv) {
 
     // Solve the equation
     StaticSource X;
-    unique_ptr<double[]> dev = make_unique<double[]>(A.shape[0] * A.shape[1] * A.shape[3] * 2);
-    solve(A.shape, A_data, n.data(), STATIC_SOURCE_MIN_MSE, &X, dev.get());
+    unique_ptr<double[]> loss = make_unique<double[]>(A.shape[0] * A.shape[1]);
+    solve(A.shape, A_data, n.data(), STATIC_SOURCE_MIN_MSE, &X, loss.get());
 
     // Print the results
     cout << "The source detected at x = " << X.x << ", y = " << X.y << "," << endl;
@@ -71,19 +71,15 @@ int main(int argc, char **argv) {
     cout << "    emission start time = " << X.T << "." << endl;
 
     // Plot the results
-    vector<vector<double>> loss(A.shape[1]);
-    vector<size_t> dev_shape = {A.shape[0], A.shape[1], A.shape[3], 2};
+    vector<size_t> loss_shape = {A.shape[0], A.shape[1]};
+    vector<vector<double>> loss_plt(A.shape[1]);
     for (int y = 0; y < A.shape[1]; y++) {
-        loss[y].resize(A.shape[0]);
+        loss_plt[y].resize(A.shape[0]);
         for (int x = 0; x < A.shape[0]; x++) {
-            double loss_min = dev[ravel_multi_index(dev_shape, {x, y, 0, 0})];
-            for (int T = 0; T < A.shape[3]; T++) {
-                loss_min = std::min(loss_min, dev[ravel_multi_index(dev_shape, {x, y, T, 0})]);
-            }
-            loss[y][x] = loss_min;
+            loss_plt[y][x] = loss[ravel_multi_index(loss_shape, {x, y})];
         }
     }
-    image(0, A.shape[0] - 1, 0, A.shape[1] - 1, loss, true);
+    image(0, A.shape[0] - 1, 0, A.shape[1] - 1, loss_plt, true);
     colorbar();
     xlabel("x");
     ylabel("y");
