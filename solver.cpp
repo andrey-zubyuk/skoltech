@@ -1,4 +1,6 @@
 #include <cmath>
+#include <thread>
+#include <mutex>
 #include "solver.h"
 
 using namespace std;
@@ -43,6 +45,30 @@ tuple<int, double, double> solve_static_source_min_mse_at_xy(
     return make_tuple(T_opt, intensity_opt, loss_opt);
 }
 
+static mutex solve_static_source_min_mse_at_x_mutex;
+
+void solve_static_source_min_mse_at_x(
+    const vector<size_t> &shape, const double *A, int x,
+    const double *n, double n_norm2, volatile double *loss_opt, StaticSource *X, double *loss
+) {
+    vector<size_t> loss_shape = {shape[0], shape[1]};
+    for (int y = 0; y < shape[1]; y++) {
+        auto res = solve_static_source_min_mse_at_xy(shape, A, x, y, n, n_norm2);
+        solve_static_source_min_mse_at_x_mutex.lock();
+        if (get<2>(res) < *loss_opt) {
+            *loss_opt = get<2>(res);
+            X->T = get<0>(res);
+            X->intensity = get<1>(res);
+            X->x = x;
+            X->y = y;
+        }
+        solve_static_source_min_mse_at_x_mutex.unlock();
+        if (loss) {
+            loss[ravel_multi_index(loss_shape, {x, y})] = get<2>(res);
+        }
+    }
+}
+
 void solve_static_source_min_mse(
     const vector<size_t> &shape, const double *A, const double *n, StaticSource *X, double *loss
 ) {
@@ -60,23 +86,17 @@ void solve_static_source_min_mse(
     }
 
     // Main computations
+    vector<thread> threads(shape[0]);
     X->x = X->y = X->T = 0;
-    vector<size_t> loss_shape = {shape[0], shape[1]};
-    double loss_opt = INFINITY;
+    volatile double loss_opt = INFINITY;
     for (int x = 0; x < shape[0]; x++) {
-        for (int y = 0; y < shape[1]; y++) {
-            auto res = solve_static_source_min_mse_at_xy(shape, A, x, y, n, n_norm2);
-            if (get<2>(res) < loss_opt) {
-                loss_opt = get<2>(res);
-                X->T = get<0>(res);
-                X->intensity = get<1>(res);
-                X->x = x;
-                X->y = y;
-            }
-            if (loss) {
-                loss[ravel_multi_index(loss_shape, {x, y})] = get<2>(res);
-            }
-        }
+        threads[x] = thread(
+            solve_static_source_min_mse_at_x,
+            shape, A, x, n, n_norm2, &loss_opt, X, loss
+        );
+    }
+    for (int x = 0; x < shape[0]; x++) {
+        threads[x].join();
     }
 }
 
