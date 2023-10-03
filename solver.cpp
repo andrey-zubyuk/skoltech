@@ -3,6 +3,10 @@
 #include <mutex>
 #include "solver.h"
 
+#ifdef __TEST_HOOKS__
+#include "tests.h"
+#endif
+
 using namespace std;
 
 // Specific solver for the STATIC_SOURCE_MIN_MSE case and its helper functions
@@ -13,6 +17,11 @@ tuple<int, double, double> solve_static_source_min_mse_at_xy(
 ) {
     int T_opt = 0;
     double loss_opt = INFINITY, intensity_opt = 0;
+
+#ifdef __TEST_HOOKS__
+    vector<size_t> bn_shape = {shape[0], shape[1], shape[3]};
+#endif
+
     for (int T = 0; T < shape[3]; T++) {
         /*
          * Pay attention at "td = T", the alternative is "td = 0".
@@ -34,7 +43,16 @@ tuple<int, double, double> solve_static_source_min_mse_at_xy(
             }
             b_norm2 += b_td * b_td;
             bn_dot_prod += b_td * n[td];
+
+#ifdef __TEST_HOOKS__
+            test_01_res.b[ravel_multi_index(shape, {x, y, td, T})] = b_td;
+#endif
         }
+
+#ifdef __TEST_HOOKS__
+        test_01_res.b_norm2[ravel_multi_index(bn_shape, {x, y, T})] = b_norm2;
+        test_01_res.bn_dot_prod[ravel_multi_index(bn_shape, {x, y, T})] = bn_dot_prod;
+#endif
 
         double loss = n_norm2 - bn_dot_prod * bn_dot_prod / (b_norm2 + tol);
         if (loss < loss_opt) {
@@ -84,6 +102,16 @@ void solve_static_source_min_mse(
     for (int td = 0; td < shape[2]; td++) {
         n_norm2 += n[td] * n[td];
     }
+
+#ifdef __TEST_HOOKS__
+    test_01_res.n_norm2 = n_norm2;
+    test_01_res.b.resize(shape[0] * shape[1] * shape[2] * shape[3]);
+    fill(test_01_res.b.begin(), test_01_res.b.end(), 0);
+    test_01_res.b_norm2.resize(shape[0] * shape[1] * shape[3]);
+    fill(test_01_res.b_norm2.begin(), test_01_res.b_norm2.end(), 0);
+    test_01_res.bn_dot_prod.resize(shape[0] * shape[1] * shape[3]);
+    fill(test_01_res.bn_dot_prod.begin(), test_01_res.bn_dot_prod.end(), 0);
+#endif
 
     // Main computations
     vector<thread> threads(shape[0]);

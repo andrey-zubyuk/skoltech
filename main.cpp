@@ -62,8 +62,8 @@ int main(int argc, char **argv) {
 
     // Solve the equation
     StaticSource X;
-    unique_ptr<double[]> loss = make_unique<double[]>(A.shape[0] * A.shape[1]);
-    solve(A.shape, A_data, n.data(), STATIC_SOURCE_MIN_MSE, &X, loss.get());
+    vector<double> loss(A.shape[0] * A.shape[1]);
+    solve(A.shape, A_data, n.data(), STATIC_SOURCE_MIN_MSE, &X, loss.data());
 
     // Print the results
     cout << "The source detected at x = " << X.x << ", y = " << X.y << "," << endl;
