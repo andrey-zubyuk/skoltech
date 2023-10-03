@@ -37,7 +37,7 @@ The parameters are as follows:
 * `n` &mdash; an array of elements of the tensor $` n `$,
 * `method` &mdash; a constant specifying a method that shall be used to solve the mathematical problem, see details in [the section below](#implemented-methods),
 * `X` &mdash; a pointer to memory where the results shall be stored, see details in [the section below](#implemented-methods),
-* `extra` &mdash; a pointer to memory where , if not NULL, see details in [the section below](#implemented-methods).
+* `extra` &mdash; if not NULL, a pointer to memory for some extra output, see details in [the section below](#implemented-methods).
 
 ## Implemented Methods
 
