@@ -56,6 +56,7 @@ tuple<int, double, double> solve_static_source_min_mse_at_xy(
 
         double loss = n_norm2 - bn_dot_prod * bn_dot_prod / (b_norm2 + tol);
         if (loss < loss_opt) {
+            T_opt = T;
             loss_opt = loss;
             intensity_opt = bn_dot_prod / (b_norm2 + tol);
         }
@@ -118,14 +119,22 @@ void solve_static_source_min_mse(
     X->x = X->y = X->T = 0;
     volatile double loss_opt = INFINITY;
     for (int x = 0; x < shape[0]; x++) {
+#ifdef __PARALLEL_COMPUTING__
         threads[x] = thread(
             solve_static_source_min_mse_at_x,
             shape, A, x, n, n_norm2, &loss_opt, X, loss
         );
+#else
+        solve_static_source_min_mse_at_x(
+            shape, A, x, n, n_norm2, &loss_opt, X, loss
+        );
+#endif
     }
+#ifdef __PARALLEL_COMPUTING__
     for (int x = 0; x < shape[0]; x++) {
         threads[x].join();
     }
+#endif
 }
 
 // Solver interface

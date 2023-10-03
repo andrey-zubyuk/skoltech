@@ -1,0 +1,23 @@
+Simulation of the North wind:
+
+- field size is 15*17 (X*Y),
+- time period is 0, ..., 9,
+- detector is located at x = 9, y = 10,
+- North wind direction is the axis "y" opposite direction
+  (from the "top" to the "bottom" of the field),
+- detector data is constant: 1.2 for any td = 0, ..., 9,
+- such data correspond to the only source of intensity 1.2
+  with emission start time = 0 located at x = 9, y = 10.
+
+Launch with the command (from the project home directory)
+
+    ./main examples/North_wind_0/A.npy examples/North_wind_0/n.csv
+
+Console output:
+
+The tensor A loaded, shape: 15x17x10x10, A.min(): 0, A.max(): 1.
+The tensor n loaded, n.min(): 1.2, n.max(): 1.2.
+The source detected at x = 9, y = 10,
+    intensity = 1.2,
+    emission start time = 0.
+Press ENTER to continue...

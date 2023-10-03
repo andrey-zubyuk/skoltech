@@ -1,0 +1,29 @@
+Simulation of the North wind:
+
+- field size is 15*17 (X*Y),
+- time period is 0, ..., 9,
+- detector is located at x = 9, y = 10,
+- North wind direction is the axis "y" opposite direction
+  (from the "top" to the "bottom" of the field),
+- detector data is 0 for td = 0, ..., 2, and 5 for td = 3, ..., 9,
+- such data correspond to one of the following sources of intensity 5:
+  -- located at x = 9, y = 10 with emission start time = 3,
+  -- located at x = 9, y = 11 with emission start time = 2,
+  -- located at x = 9, y = 12 with emission start time = 1,
+  -- located at x = 9, y = 13 with emission start time = 0.
+
+Note that depending on parallel computing implementation the application can
+select any of these equally optimal sources.
+
+Launch with the command (from the project home directory)
+
+    ./main examples/North_wind_3/A.npy examples/North_wind_3/n.csv
+
+Example of console output (see the note about parallel computing above):
+
+The tensor A loaded, shape: 15x17x10x10, A.min(): 0, A.max(): 1.
+The tensor n loaded, n.min(): 0, n.max(): 5.
+The source detected at x = 9, y = 10,
+    intensity = 5,
+    emission start time = 3.
+Press ENTER to continue...

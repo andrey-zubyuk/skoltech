@@ -1,4 +1,4 @@
-CXXFLAGS = -std=gnu++1z
+CXXFLAGS = -std=gnu++1z -D__PARALLEL_COMPUTING__
 LDFLAGS = -lpthread -lcnpy -lmatplot
 SOURCES = solver.cpp
 HEADERS = solver.h

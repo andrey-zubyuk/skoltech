@@ -1,0 +1,14 @@
+The data provided by SkolTech.
+
+Launch with the command (from the project home directory)
+
+    ./main examples/Anomaly/A.npy examples/Anomaly/n.csv
+
+Console output:
+
+The tensor A loaded, shape: 10x10x10x10, A.min(): 0, A.max(): 296.813.
+The tensor n loaded, n.min(): 0, n.max(): 3358.24.
+The source detected at x = 0, y = 1,
+    intensity = 10.9538,
+    emission start time = 0.
+Press ENTER to continue...
