@@ -41,7 +41,10 @@ The parameters are as follows:
 
 ## Implemented Methods
 
-Currently the only method implemented is suitable for the case of a static point source of particles: $$ X_{xyt} = \begin{cases} c \end{cases} $$ if $` t \geq T,\ x= x_s,\ y= y_s `$, $` X_{xyt} = 0 `$ otherwise, where
+Currently the only method implemented is suitable for the case of a static point source of particles:
+$$X_{xyt} = c \text{ if } t \geq T,\ x= x_s,\ y= y_s,$$
+$$X_{xyt} = 0 \text{ otherwise},$$
+where
 
 * $` c `$ &mdash; source intensity,
 * $` T `$ &mdash; emission start time,
@@ -61,4 +64,32 @@ If not NULL, the parameter `extra` shall be a pointer to a 2d-array of size $` (
 
 ## Build
 
+The project has the following dependencies:
+
+* [`cnpy`](https://github.com/rogersce/cnpy),
+* [`Matplot++`](https://github.com/alandefreitas/matplotplusplus).
+
+To build the project, one can use the following command
+
+    make
+
+which builds both the command-line interface to the solver and the command-line test cases. To build these two parts separately, use
+
+    make main
+    make tests
+
 ## Run
+
+To apply the `STATIC_SOURCE_MIN_MSE` solver to the data from a command line, use the command
+
+    ./main <path_to_tensor_A_npy> <path_to_tensor_n_csv>
+
+where `<path_to_tensor_A_npy>` is a path to a npy-file with the tensor $` A `$, `<path_to_tensor_n_csv>` is a path to a csv-file with the tensor $` n `$. The command-line tool prints the results to the standard output and shows them in a figure.
+
+To run the test cases, use the command
+
+    ./tests
+
+## Examples
+
+In the folder `examples`, several examples are provided. Each subfolder contains a file `README` with an example description, files `A.npy` and `n.csv` with the input tensors, and a file `results.png` with an output figure.

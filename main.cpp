@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
         std::min(X.y + 0.1 * A.shape[1], 0.95 * A.shape[1]),
         (double)X.x, (double)X.y, "detected source"
     );
-    title("Sum squared error and the detected source");
+    title("Residual sum of squares (RSS) and the detected source");
     show();
 
     // Exit
