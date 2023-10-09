@@ -3,7 +3,7 @@
 ## Mathematical Problem
 
 This project implements algorithms to find a tensor $` X `$ from the equation
-$$\sum_{x=0}^{x_\max} \sum_{y=0}^{y_\max} \sum_{t_s=0}^{t_{s\max}} A_{x y t_d t_s} X_{x y t_s} = n_{t_d}, \quad t_d = 0, \ldots, t_{d\max},$$
+$$\sum_{x=0}^{x_\max} \sum_{y=0}^{y_\max} \sum_{t_s=0}^{t_d} A_{x y t_d t_s} X_{x y t_s} = n_{t_d}, \quad t_d = 0, \ldots, t_{d\max},$$
 where
 
 * $` X_{x y t_s} `$ &mdash; number of particles emitted from a point $` (x, y) `$ at time $` t_s `$,
